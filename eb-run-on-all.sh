@@ -24,7 +24,7 @@ echo $commandtorun > commandtorun.txt
 
 aws elasticbeanstalk describe-environment-resources --environment-name  $environmentname --query 'EnvironmentResources.Instances' --output text > instanceids.txt 
  
-input="/Users/ssarangkar/work/scripts/instanceids.txt"
+input="instanceids.txt"
 while IFS= read -r var
 do
 	aws ec2 describe-instances --instance-ids  $var --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text >> allips.txt	
@@ -34,7 +34,7 @@ while IFS= read -r ip
 do
 	ssh  -oControlMaster=no -oControlPath=~/.ssh/ssh-%r-%h-%p ec2-user@$ip /bin/bash < commandtorun.txt
 
-done < "/Users/ssarangkar/work/scripts/allips.txt"
+done < "allips.txt"
 
 #Cleanup 
 rm instanceids.txt  allips.txt  commandtorun.txt
